@@ -29,13 +29,19 @@ class ResearchAgent:
         logger.info("ResearchAgent initialized")
     
     def analyze_query(self, query: str) -> List[str]:
-        """Analyze and expand the research query."""
-        logger.info(f"Analyzing query: {query}")
-        return [
-            query,
-            f"{query} information",
-            f"{query} explained"
-        ]
+        """Enhance query analysis to better understand intent."""
+        prompt = ChatPromptTemplate.from_template(
+            """Analyze this research query: {query}
+            Generate 3-5 search queries that will help find:
+            1. Core factual information
+            2. Recent developments/news
+            3. Different perspectives/analyses
+            Return only the queries, one per line."""
+        )
+        
+        chain = prompt | self.llm | StrOutputParser()
+        expanded_queries = chain.invoke({"query": query}).split('\n')
+        return [q.strip() for q in expanded_queries if q.strip()]
     
     def synthesize_report(self, analyzed_content: List[Dict], query: str) -> str:
         """Create a report from analyzed content."""
