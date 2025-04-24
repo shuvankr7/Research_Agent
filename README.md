@@ -46,23 +46,6 @@ Run research directly from terminal:
 
 python main.py --query "your research question"
 
-## Project Structure
-
-ai-web-research-agent/
-├── src/
-│   ├── agents/
-│   │   └── research_agent.py
-│   ├── tools/
-│   │   ├── search_tool.py
-│   │   ├── content_processor.py
-│   │   └── cache_manager.py
-│   └── utils/
-│       ├── config.py
-│       └── logger.py
-├── main.py
-├── aapp.py
-└── README.md
-
 ## Key Components
 ### Search Tool
 - Implements rate-limited web searching
