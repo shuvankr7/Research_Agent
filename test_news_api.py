@@ -327,32 +327,3 @@ This report provides information about {topic} based on data gathered from multi
         print(f"Research completed in {duration:.1f} seconds\n")
         return report
 
-# # For standalone usage
-# def main():
-#     """Main execution function when run as a standalone script."""
-#     print("Enhanced Search Tool")
-#     print("-" * 40)
-    
-#     try:
-#         # Initialize the research tool
-#         search_tool = EnhancedSearchTool()
-        
-#         # Get the query from the user
-#         query = input("\nEnter your search query: ")
-        
-#         # Perform the research
-#         if query.strip():
-#             report = search_tool.research(query)
-#             print("\n" + report)
-#         else:
-#             print("Empty query. Please enter a valid search topic.")
-    
-#     except KeyboardInterrupt:
-#         print("\n\nSearch canceled by user.")
-#     except Exception as e:
-#         print(f"\n\nERROR: An unexpected error occurred: {e}")
-#         import traceback
-#         traceback.print_exc()
-
-# if __name__ == "__main__":
-#     main()

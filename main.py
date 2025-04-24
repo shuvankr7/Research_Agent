@@ -17,17 +17,15 @@ from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.chains import LLMChain
 from langchain_core.output_parsers import StrOutputParser, PydanticOutputParser
-from langchain_community.tools import DuckDuckGoSearchResults
-from langchain_community.utilities import DuckDuckGoSearchAPIWrapper
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import WebBaseLoader
 from langchain_core.pydantic_v1 import BaseModel, Field
-from src.custom_search import CustomSearch
+from custom_search import CustomSearch
 
 # Import EnhancedSearchTool from test_news_api
 # Import the module itself for full access to its functions
-import src.test_news_api as search_module
-from src.test_news_api import EnhancedSearchTool
+import test_news_api as search_module
+from test_news_api import EnhancedSearchTool
 
 # Constants
 MAX_RESULTS = 5
@@ -412,13 +410,19 @@ class ResearchAgent:
 
 def main():
     """Command line interface for the research agent."""
-    print("Entering main function")
+    logger.info("Entering main function")
+    
+    # Check for required API key
+    if not GROQ_API_KEY:
+        logger.error("GROQ_API_KEY not found in environment variables")
+        sys.exit(1)
+    
     parser = argparse.ArgumentParser(description='AI Web Research Agent')
     parser.add_argument('--query', type=str, help='Research query or question')
     args = parser.parse_args()
     
     try:
-        print("Creating ResearchAgent instance...")
+        logger.info("Creating ResearchAgent instance...")
         agent = ResearchAgent()
         
         if args.query:
@@ -427,22 +431,22 @@ def main():
             print("\nAI Web Research Agent 🔍")
             print("Enter your research question, and the AI agent will search the web, analyze the content, and provide a comprehensive research report.")
             print("\nNew Research\n")
-            print("Research History\n")
             query = input("Enter your research query:\n")
         
         start_time = time.time()
         report = agent.research(query)
         end_time = time.time()
         
-        print(f"Research completed in {end_time - start_time:.1f} seconds!")
+        print(f"\nResearch completed in {end_time - start_time:.1f} seconds!")
         print(f"\n{report}")
         print("\nAI Web Research Agent - Powered by Groq LLM and LangChain")
+        
     except Exception as e:
-        print(f"ERROR in main function: {e}")
-        traceback.print_exc()
+        logger.error(f"Error in main function: {e}", exc_info=True)
+        sys.exit(1)
 
 if __name__ == "__main__":
-    print("Script called directly")
+    logger.info("Script called directly")
     main()
 else:
-    print("Script imported as module")
+    logger.info("Script imported as module")

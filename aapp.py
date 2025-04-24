@@ -9,7 +9,7 @@ import pandas as pd
 import re
 from datetime import datetime
 from dotenv import load_dotenv
-from src.main import ResearchAgent
+from src.agents.research_agent import ResearchAgent
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
