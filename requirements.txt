@@ -1,0 +1,12 @@
+langchain>=0.1.0
+langchain-groq>=0.0.1
+langchain-community>=0.0.13
+langchain-core>=0.1.17
+beautifulsoup4>=4.12.2
+trafilatura>=1.6.1
+python-dotenv>=1.0.0
+requests>=2.31.0
+pydantic>=2.5.2
+duckduckgo-search>=4.1.1
+streamlit>=1.32.0
+newsapi-python==0.2.6

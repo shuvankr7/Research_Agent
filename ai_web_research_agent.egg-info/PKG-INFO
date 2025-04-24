@@ -1,0 +1,83 @@
+Metadata-Version: 2.1
+Name: ai-web-research-agent
+Version: 0.1.0
+Summary: An AI-powered web research agent using Groq LLM
+Home-page: https://github.com/shuvankar7/ai-web-research-agent
+Author: Your Name
+Author-email: shuvankarnaskar75@gmail.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: requests>=2.25.0
+Requires-Dist: beautifulsoup4>=4.9.3
+Requires-Dist: trafilatura>=1.2.0
+Requires-Dist: nltk>=3.6.0
+Requires-Dist: python-dotenv>=0.19.0
+Requires-Dist: langchain>=0.1.0
+Requires-Dist: langchain-groq>=0.0.1
+Requires-Dist: langchain-community>=0.0.13
+Requires-Dist: langchain-core>=0.1.17
+Requires-Dist: duckduckgo-search>=4.1.1
+Requires-Dist: pydantic>=2.5.2
+
+"""
+Project: AI Web Research Agent with Groq LLM
+
+🧠 Goal:
+Build a Python-based AI agent that can perform web research end-to-end with minimal human input. It should:
+- Understand user queries
+- Search the web
+- Scrape and extract content
+- Analyze and summarize information
+- Return a well-organized, structured report
+
+🎯 Tools & Technologies:
+- Groq API for LLM-based query understanding, summarization, and synthesis
+- DuckDuckGo or SerpAPI for web search
+- BeautifulSoup / Playwright for web scraping
+- Sentence Transformers or OpenAI embeddings for semantic similarity
+- LangChain for orchestration (optional but helpful)
+- Pydantic for structured data models
+- Requests, asyncio, aiohttp for async I/O
+- Logging, tqdm for UX
+
+📦 Modules:
+1. `main.py` – Entry point, handles user input and output
+2. `query_analyzer.py` – Analyzes query intent and generates sub-queries
+3. `search_tool.py` – Calls web search API and returns URLs/snippets
+4. `scraper.py` – Extracts content using requests/Playwright/BS4
+5. `content_analyzer.py` – Filters, classifies, and ranks content
+6. `synthesizer.py` – Combines content into summaries using Groq
+7. `models.py` – Pydantic models for query, content, and response structure
+8. `tests/` – Test each module using pytest
+
+🛠️ Features:
+- Query understanding using Groq
+- Auto keyword generation
+- Search result ranking
+- JavaScript and static page scraping
+- Intelligent content summarization
+- Multiple source comparison
+- Error handling for timeouts, failed scrapes, or conflicting info
+- Markdown/HTML/JSON report output
+
+🧪 Tests:
+- Test simple factual queries
+- Test complex exploratory queries
+- Test news-based queries with date filtering
+- Validate scraper on a set of real pages (e.g., Wikipedia, blogs)
+- Simulate site failure and test retry/fallback behavior
+
+🎯 Sample Prompt:
+> “Research the latest trends in LLM-powered autonomous agents. Provide summaries from 5 recent sources including any open-source frameworks and academic papers.”
+
+Expected output: Clean report with sources, bullet points, and optional download.
+
+🔧 Instructions:
+- Build modularly
+- Add `requirements.txt` with all dependencies
+- Include `.env` for API keys
+- Use docstrings and type hints
+"""
