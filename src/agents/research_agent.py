@@ -43,8 +43,9 @@ class ResearchAgent:
         
         formatted_content = []
         for i, item in enumerate(analyzed_content):
+            source_name = item.get('source', '').split('.')[0].title()  # Extract website name
             formatted_content.append(
-                f"Source {i+1}: {item.get('source')}\n"
+                f"Source: {source_name}\n"
                 f"URL: {item.get('url')}\n"
                 f"Content: {item.get('content')}\n"
             )
@@ -57,12 +58,12 @@ class ResearchAgent:
             {content}
             
             INSTRUCTIONS:
-            1. Only include factual information from the provided sources
-            2. Include citations in square brackets like [1] after statements
-            3. Format your response as a well-structured report with markdown headers
+            1. Use source names for citations (e.g., [ESPNCricinfo], [NDTVSports]) instead of numbers
+            2. Format your response as a well-structured report with markdown headers
+            3. Only include factual information from the provided sources
             4. For "what is" questions, focus on clear definitions first, then details
-            5. Do NOT include separate Resources or References sections at the end
-            6. Start directly with informative content
+            5. Do NOT include separate Resources or References sections
+            6. Cite sources using the website name in square brackets
             
             Your report should synthesize the information into a cohesive, readable format.
             """
