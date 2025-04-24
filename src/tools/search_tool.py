@@ -31,7 +31,12 @@ class SearchTool:
             return []
             
         url = "https://google.serper.dev/search"
-        payload = {'q': query, 'num': max_results}
+        # Add time-sensitive parameters for live content
+        payload = {
+            'q': f"{query} current live updates",
+            'num': max_results,
+            'tbs': 'qdr:h'  # Restrict to last hour for live content
+        }
         headers = {
             'X-API-KEY': SERPER_API_KEY,
             'Content-Type': 'application/json'
@@ -45,11 +50,15 @@ class SearchTool:
             results = []
             if 'organic' in data and data['organic']:
                 for item in data['organic'][:max_results]:
-                    results.append({
-                        'title': item.get('title', 'No title'),
-                        'link': item.get('link', '#'),
-                        'snippet': item.get('snippet', 'No description available')
-                    })
+                    # Validate and clean URLs
+                    link = item.get('link', '#')
+                    if link and link.startswith('http'):
+                        results.append({
+                            'title': item.get('title', 'No title'),
+                            'link': link,
+                            'snippet': item.get('snippet', 'No description available'),
+                            'time': item.get('date', 'Recent')  # Try to get publication date
+                        })
             return results
             
         except Exception as e:
