@@ -42,11 +42,15 @@ class ResearchAgent:
         logger.info(f"Synthesizing report from {len(analyzed_content)} content items")
         
         formatted_content = []
-        for i, item in enumerate(analyzed_content):
-            source_name = item.get('source', '').split('.')[0].title()  # Extract website name
+        for item in analyzed_content:
+            # Extract domain name and clean it
+            url = item.get('url', '')
+            domain = url.split('//')[1].split('/')[0] if '//' in url else url
+            source_name = domain.replace('www.', '').split('.')[0].upper()
+            
             formatted_content.append(
                 f"Source: {source_name}\n"
-                f"URL: {item.get('url')}\n"
+                f"URL: {url}\n"
                 f"Content: {item.get('content')}\n"
             )
         
@@ -58,12 +62,12 @@ class ResearchAgent:
             {content}
             
             INSTRUCTIONS:
-            1. Use source names for citations (e.g., [ESPNCricinfo], [NDTVSports]) instead of numbers
-            2. Format your response as a well-structured report with markdown headers
-            3. Only include factual information from the provided sources
-            4. For "what is" questions, focus on clear definitions first, then details
-            5. Do NOT include separate Resources or References sections
-            6. Cite sources using the website name in square brackets
+            1. Use the source website names for citations (e.g., [CRICINFO], [NDTV])
+            2. Each fact should be followed by the source citation
+            3. Format your response as a well-structured report with markdown headers
+            4. Only include factual information from the provided sources
+            5. Do NOT include separate References or Sources sections
+            6. Avoid using numerical citations like [1], [2], etc.
             
             Your report should synthesize the information into a cohesive, readable format.
             """
