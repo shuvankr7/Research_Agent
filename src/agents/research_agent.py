@@ -32,7 +32,7 @@ class ResearchAgent:
         """Enhance query analysis to better understand intent."""
         prompt = ChatPromptTemplate.from_template(
             """Analyze this research query: {query}
-            Generate 3-5 search queries that will help find:
+            Generate 5-7 search queries that will help find:
             1. Core factual information
             2. Recent developments/news
             3. Different perspectives/analyses
@@ -73,7 +73,7 @@ class ResearchAgent:
             3. Format your response as a well-structured report with markdown headers
             4. Only include factual information from the provided sources
             5. Do NOT include separate References or Sources sections
-            6. Avoid using numerical citations like [1], [2], etc.
+            6. Avoid using numerical citations like [1], [2],[3,7,8] etc.
             
             Your report should synthesize the information into a cohesive, readable format.
             """
@@ -129,10 +129,15 @@ class ResearchAgent:
     def perform_search(self, search_queries: List[str], max_results: int = 3) -> List[Dict]:
         """Perform search using the provided queries."""
         logger.info(f"Performing search with queries: {search_queries}")
+        
+        if not search_queries or not any(query.strip() for query in search_queries):
+            raise ValueError("Search queries cannot be empty")
+            
         results = []
         for query in search_queries:
-            search_results = self.search_tool.direct_search(query, max_results=max_results)
-            results.extend(search_results)
+            if query.strip():  # Only search non-empty queries
+                search_results = self.search_tool.direct_search(query, max_results=max_results)
+                results.extend(search_results)
         return results
     
     # Add these methods from the content processor to make them accessible through ResearchAgent

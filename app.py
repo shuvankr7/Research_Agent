@@ -48,7 +48,7 @@ with st.sidebar:
         index=0
     )
     
-    search_depth = st.slider("Search Depth", min_value=1, max_value=5, value=3, 
+    search_depth = st.slider("Search Depth", min_value=1, max_value=7, value=3, 
                             help="Higher values search more sources but take longer")
     
     # Tabs for history and about
