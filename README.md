@@ -1,7 +1,9 @@
 # AI Web Research Agent 
 
 An intelligent web research assistant that automatically searches, analyzes, and synthesizes information from across the internet to create comprehensive research reports.
-## App link - https://researchagent-tbbjlfwy497vfsn2pwjjno.streamlit.app/
+## App link -
+1. https://researchagent-tbbjlfwy497vfsn2pwjjno.streamlit.app/
+2. https://research-agent-1gxf.onrender.com/
 
 ##  Features
 
