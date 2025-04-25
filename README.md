@@ -1,38 +1,39 @@
 # AI Web Research Agent 🔍
 
 An intelligent web research assistant that automatically searches, analyzes, and synthesizes information from across the internet to create comprehensive research reports.
+## App link - https://researchagent-tbbjlfwy497vfsn2pwjjno.streamlit.app/
 
-## 🌟 Features
+##  Features
 
-- 🤖 Intelligent Query Analysis
+-  Intelligent Query Analysis
   - Smart query expansion
   - Context-aware search
   - Topic categorization
 
-- 🌐 Advanced Web Search
+-  Advanced Web Search
   - Multi-source search
   - Priority-based source ranking
   - Real-time content fetching
   - Robots.txt compliance
 
-- 📰 News Aggregation
+-  News Aggregation
   - Latest news integration
   - Trusted source prioritization
   - Time-sensitive content filtering
 
-- 📊 Content Processing
+-  Content Processing
   - Smart content extraction
   - Source validation
   - Information synthesis
   - Duplicate removal
 
-- 📝 Report Generation
+-  Report Generation
   - Structured research reports
   - Source citations
   - Content organization
   - Summary generation
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 - Python 3.8+
@@ -59,7 +60,7 @@ SERPER_API_KEY=your_serper_api_key
 Run the web interface:
 streamlit run app.py
 
-## 🏗️ Project Structure
+## 🏗 Project Structure
 
 ```ai-web-research-agent/
 ├── src/
@@ -79,7 +80,7 @@ streamlit run app.py
 └── requirements.txt
 ```
 
-## 🔄 Flow Diagram
+##  Flow Diagram
 ```graph TD
     A[User Query] --> B[Query Analysis]
     B --> C[Search Terms Generation]
@@ -97,9 +98,9 @@ streamlit run app.py
     J -->|Not Allowed| K[Skip Source]
 ```
 
-## 📝 License
+##  License
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🤝 Contributing
+##  Contributing
 Contributions are welcome! Please feel free to submit a Pull Request.
 
