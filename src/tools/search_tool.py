@@ -32,13 +32,16 @@ class SearchTool:
             
         url = "https://google.serper.dev/search"
         
-        # Enhanced query processing for better relevance
-        base_query = query.strip()
+        # Query categorization and source mapping
+        query_lower = query.strip().lower()
+        search_config = self._get_search_config(query_lower)
+        
+        # Generate targeted search queries
         search_queries = [
-            base_query,  # Original query
-            f"{base_query} latest news",  # Latest news
-            f"{base_query} site:cricbuzz.com OR site:espncricinfo.com OR site:bcci.tv",  # Sports specific
-            f"{base_query} last 24 hours"  # Recent content
+            query,  # Original query
+            f"{query} {search_config['suffix']}",  # Topic-specific suffix
+            f"{query} site:{' OR site:'.join(search_config['primary_sources'])}",  # Primary sources
+            f"{query} {search_config['time_filter']}"  # Time relevance
         ]
         
         all_results = []
@@ -46,8 +49,7 @@ class SearchTool:
             payload = {
                 'q': search_query,
                 'num': max_results,
-                'tbs': 'qdr:d',  # Last 24 hours
-                'gl': 'in'  # Prioritize Indian results for cricket
+                'gl': search_config['region']
             }
             
             try:
@@ -61,16 +63,69 @@ class SearchTool:
                 
                 if 'organic' in data:
                     all_results.extend(data['organic'])
-                    
             except Exception as e:
                 logger.error(f"Search error for query '{search_query}': {e}")
                 continue
+
+        return self._process_results(all_results, search_config, max_results)
+
+    def _get_search_config(self, query: str) -> Dict:
+        """Determine search configuration based on query type."""
+        configs = {
+            'tech': {
+                'primary_sources': ['wikipedia.org', 'github.com', 'stackoverflow.com'],
+                'secondary_sources': ['medium.com', 'dev.to', 'towardsdatascience.com'],
+                'suffix': 'tutorial guide',
+                'time_filter': '',
+                'region': 'us'
+            },
+            'news': {
+                'primary_sources': ['reuters.com', 'apnews.com', 'bbc.com'],
+                'secondary_sources': ['theguardian.com', 'nytimes.com', 'cnn.com'],
+                'suffix': 'latest news',
+                'time_filter': 'when:24h',
+                'region': 'us'
+            },
+            'sports': {
+                'primary_sources': ['espn.com', 'sports.yahoo.com', 'cricbuzz.com'],
+                'secondary_sources': ['ndtv.com/sports', 'timesofindia.com/sports'],
+                'suffix': 'latest updates',
+                'time_filter': 'when:24h',
+                'region': 'in'
+            },
+            'academic': {
+                'primary_sources': ['scholar.google.com', 'researchgate.net', 'arxiv.org'],
+                'secondary_sources': ['academia.edu', 'jstor.org'],
+                'suffix': 'research paper',
+                'time_filter': '',
+                'region': 'us'
+            },
+            'default': {
+                'primary_sources': ['wikipedia.org', 'britannica.com'],
+                'secondary_sources': ['thoughtco.com', 'howstuffworks.com'],
+                'suffix': 'explained guide',
+                'time_filter': '',
+                'region': 'us'
+            }
+        }
         
-        # Deduplicate and rank results
+        # Determine query category
+        if any(term in query for term in ['programming', 'code', 'software', 'ai', 'machine learning']):
+            return configs['tech']
+        elif any(term in query for term in ['news', 'latest', 'current', 'today']):
+            return configs['news']
+        elif any(term in query for term in ['sports', 'cricket', 'football', 'game']):
+            return configs['sports']
+        elif any(term in query for term in ['research', 'paper', 'study', 'thesis']):
+            return configs['academic']
+        return configs['default']
+
+    def _process_results(self, results: List[Dict], config: Dict, max_results: int) -> List[Dict]:
+        """Process and rank search results."""
         seen_urls = set()
         final_results = []
         
-        for item in all_results:
+        for item in results:
             link = item.get('link', '')
             if not link or not link.startswith('http'):
                 continue
@@ -79,12 +134,12 @@ class SearchTool:
                 seen_urls.add(link)
                 domain = link.split('/')[2].lower()
                 
-                # Prioritize trusted sources
-                priority = 1
-                if any(site in domain for site in ['cricbuzz.com', 'espncricinfo.com', 'bcci.tv']):
+                # Determine result priority
+                priority = 3  # Default priority
+                if any(source in domain for source in config['primary_sources']):
                     priority = 0
-                elif any(site in domain for site in ['ndtv.com', 'timesofindia.com', 'hindustantimes.com']):
-                    priority = 2
+                elif any(source in domain for source in config['secondary_sources']):
+                    priority = 1
                 
                 final_results.append({
                     'title': item.get('title', 'No title'),
