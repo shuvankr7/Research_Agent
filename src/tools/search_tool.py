@@ -32,45 +32,68 @@ class SearchTool:
             
         url = "https://google.serper.dev/search"
         
-        # Improve search query for sports/cricket related queries
-        if any(keyword in query.lower() for keyword in ['ipl', 'cricket', 'match', 'score']):
-            query = f"{query} site:cricbuzz.com OR site:espncricinfo.com OR site:bcci.tv"
+        # Enhanced query processing for better relevance
+        base_query = query.strip()
+        search_queries = [
+            base_query,  # Original query
+            f"{base_query} latest news",  # Latest news
+            f"{base_query} site:cricbuzz.com OR site:espncricinfo.com OR site:bcci.tv",  # Sports specific
+            f"{base_query} last 24 hours"  # Recent content
+        ]
         
-        payload = {
-            'q': query,
-            'num': max_results * 2,  # Request more results to filter
-            'tbs': 'qdr:d'  # Restrict to last 24 hours for recent content
-        }
-        headers = {
-            'X-API-KEY': SERPER_API_KEY,
-            'Content-Type': 'application/json'
-        }
+        all_results = []
+        for search_query in search_queries:
+            payload = {
+                'q': search_query,
+                'num': max_results,
+                'tbs': 'qdr:d',  # Last 24 hours
+                'gl': 'in'  # Prioritize Indian results for cricket
+            }
+            
+            try:
+                response = requests.post(url, 
+                    headers={'X-API-KEY': SERPER_API_KEY, 'Content-Type': 'application/json'},
+                    json=payload, 
+                    timeout=DEFAULT_TIMEOUT
+                )
+                response.raise_for_status()
+                data = response.json()
+                
+                if 'organic' in data:
+                    all_results.extend(data['organic'])
+                    
+            except Exception as e:
+                logger.error(f"Search error for query '{search_query}': {e}")
+                continue
         
-        try:
-            response = requests.post(url, headers=headers, json=payload, timeout=DEFAULT_TIMEOUT)
-            response.raise_for_status()
-            data = response.json()
-            
-            results = []
-            if 'organic' in data and data['organic']:
-                for item in data['organic']:
-                    # Prioritize trusted sports websites
-                    link = item.get('link', '')
-                    if link and link.startswith('http'):
-                        # Filter and prioritize reliable sources
-                        domain = link.split('/')[2].lower()
-                        if (any(site in domain for site in ['cricbuzz.com', 'espncricinfo.com', 'bcci.tv']) or
-                            len(results) < max_results):
-                            results.append({
-                                'title': item.get('title', 'No title'),
-                                'link': link,
-                                'snippet': item.get('snippet', 'No description available'),
-                                'time': item.get('date', 'Recent')
-                            })
-                            if len(results) >= max_results:
-                                break
-            return results
-            
-        except Exception as e:
-            logger.error(f"Direct search error: {e}")
-            return []
+        # Deduplicate and rank results
+        seen_urls = set()
+        final_results = []
+        
+        for item in all_results:
+            link = item.get('link', '')
+            if not link or not link.startswith('http'):
+                continue
+                
+            if link not in seen_urls:
+                seen_urls.add(link)
+                domain = link.split('/')[2].lower()
+                
+                # Prioritize trusted sources
+                priority = 1
+                if any(site in domain for site in ['cricbuzz.com', 'espncricinfo.com', 'bcci.tv']):
+                    priority = 0
+                elif any(site in domain for site in ['ndtv.com', 'timesofindia.com', 'hindustantimes.com']):
+                    priority = 2
+                
+                final_results.append({
+                    'title': item.get('title', 'No title'),
+                    'link': link,
+                    'snippet': item.get('snippet', 'No description available'),
+                    'time': item.get('date', 'Recent'),
+                    'priority': priority
+                })
+        
+        # Sort by priority and return top results
+        final_results.sort(key=lambda x: x['priority'])
+        return final_results[:max_results]
