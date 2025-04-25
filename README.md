@@ -50,19 +50,15 @@ git clone https://github.com/shuvankr7/Research_Agent.git
 pip install -r requirements.txt
 ```
 3. Set up environment variables:
-   Create a .env file with:
-```
+
+Create a .env file with:
 GROQ_API_KEY=your_api_key_here
 SERPER_API_KEY=your_serper_api_key
 
-```
 ### Usage
 Run the web interface:
-
-```
 streamlit run app.py
 
-```
 ## 🏗️ Project Structure
 
 ```ai-web-research-agent/
