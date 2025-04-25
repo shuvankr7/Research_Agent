@@ -31,11 +31,15 @@ class SearchTool:
             return []
             
         url = "https://google.serper.dev/search"
-        # Add time-sensitive parameters for live content
+        
+        # Improve search query for sports/cricket related queries
+        if any(keyword in query.lower() for keyword in ['ipl', 'cricket', 'match', 'score']):
+            query = f"{query} site:cricbuzz.com OR site:espncricinfo.com OR site:bcci.tv"
+        
         payload = {
-            'q': f"{query} current live updates",
-            'num': max_results,
-            'tbs': 'qdr:h'  # Restrict to last hour for live content
+            'q': query,
+            'num': max_results * 2,  # Request more results to filter
+            'tbs': 'qdr:d'  # Restrict to last 24 hours for recent content
         }
         headers = {
             'X-API-KEY': SERPER_API_KEY,
@@ -49,16 +53,22 @@ class SearchTool:
             
             results = []
             if 'organic' in data and data['organic']:
-                for item in data['organic'][:max_results]:
-                    # Validate and clean URLs
-                    link = item.get('link', '#')
+                for item in data['organic']:
+                    # Prioritize trusted sports websites
+                    link = item.get('link', '')
                     if link and link.startswith('http'):
-                        results.append({
-                            'title': item.get('title', 'No title'),
-                            'link': link,
-                            'snippet': item.get('snippet', 'No description available'),
-                            'time': item.get('date', 'Recent')  # Try to get publication date
-                        })
+                        # Filter and prioritize reliable sources
+                        domain = link.split('/')[2].lower()
+                        if (any(site in domain for site in ['cricbuzz.com', 'espncricinfo.com', 'bcci.tv']) or
+                            len(results) < max_results):
+                            results.append({
+                                'title': item.get('title', 'No title'),
+                                'link': link,
+                                'snippet': item.get('snippet', 'No description available'),
+                                'time': item.get('date', 'Recent')
+                            })
+                            if len(results) >= max_results:
+                                break
             return results
             
         except Exception as e:
