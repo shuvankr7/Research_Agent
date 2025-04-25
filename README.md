@@ -43,7 +43,7 @@ An intelligent web research assistant that automatically searches, analyzes, and
 
 1. Clone the repository:
 ```
-git clone https://github.com/yourusername/ai-web-research-agent.git
+git clone https://github.com/shuvankr7/Research_Agent.git
 ```
 2. Install dependencies:
 ```
@@ -51,13 +51,17 @@ pip install -r requirements.txt
 ```
 3. Set up environment variables:
    Create a .env file with:
-```GROQ_API_KEY=your_api_key_here
-   SERPER_API_KEY=your_serper_api_key
+```
+GROQ_API_KEY=your_api_key_here
+SERPER_API_KEY=your_serper_api_key
+
 ```
 ### Usage
 Run the web interface:
 
-```streamlit run app.py
+```
+streamlit run app.py
+
 ```
 ## 🏗️ Project Structure
 
